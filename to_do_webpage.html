@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color:cadetblue;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.74);
+    }
+    
+    h1 {
+      color:azure;
+      text-align: center;
+      font-style:oblique;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    
+    .task-item {
+      margin-bottom: 10px;
+    }
+    
+    .task-item span {
+      margin-right: 10px;
+    }
+    
+    .completed {
+      text-decoration: line-through;
+      color:white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do Web Page</h1>
+    
+    <input type="text" id="taskInput" placeholder="Add a new task...">
+    <button onclick="addTask()">Add Task</button>
+    
+    <h2>Pending Tasks</h2>
+    <ul id="pendingTasksList"></ul>
+    
+    <h2>Completed Tasks</h2>
+    <ul id="completedTasksList"></ul>
+  </div>
+
+  <script>
+    // Store tasks in an array
+    let tasks = [];
+    
+    // Function to add a new task
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const taskText = taskInput.value.trim();
+      
+      if (taskText !== '') {
+        // Create a new task object with the current date and time
+        const newTask = {
+          text: taskText,
+          completed: false,
+          timestamp: new Date()
+        };
+        
+        // Add the new task to the tasks array
+        tasks.push(newTask);
+        
+        // Clear the input field
+        taskInput.value = '';
+        
+        // Render the updated tasks
+        renderTasks();
+      }
+    }
+    
+    // Function to mark a task as complete
+    function markTaskComplete(index) {
+      tasks[index].completed = true;
+      renderTasks();
+    }
+    
+    // Function to delete a task
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      renderTasks();
+    }
+    
+    // Function to render the tasks on the page
+    function renderTasks() {
+      const pendingTasksList = document.getElementById('pendingTasksList');
+      const completedTasksList = document.getElementById('completedTasksList');
+      
+      // Clear the lists
+      pendingTasksList.innerHTML = '';
+      completedTasksList.innerHTML = ''; 
+      // Render pending tasks
+      tasks.forEach((task, index) => {
+        const taskItem = document.createElement('li');
+        taskItem.className = 'task-item';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.completed;
+        checkbox.onchange = () => markTaskComplete(index);
+        
+        const span = document.createElement('span');
+        span.textContent = task.text;
+        if (task.completed) {
+          span.className = 'completed';
+        }
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => deleteTask(index);
+        
+        taskItem.appendChild(checkbox);
+        taskItem.appendChild(span);
+        taskItem.appendChild(deleteButton);
+        
+        if (task.completed) {
+          completedTasksList.appendChild(taskItem);
+        } else {
+          pendingTasksList.appendChild(taskItem);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
